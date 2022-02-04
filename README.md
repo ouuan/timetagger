@@ -1,3 +1,7 @@
+This is a modified version **WITHOUT authentication**. Use it with other authentication tools and/or locally **at your own risk**!
+
+---
+
 [![CI](https://github.com/almarklein/timetagger/workflows/CI/badge.svg)](https://github.com/almarklein/timetagger/actions)
 [![Documentation Status](https://readthedocs.org/projects/timetagger/badge/?version=latest)](https://timetagger.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/timetagger.svg)](https://badge.fury.io/py/timetagger)
