@@ -1,0 +1,15 @@
+# WARN!!! It has no authentication. Use other authentication tools and/or locally at your own risk!
+
+version: '3'
+
+services:
+  timetagger:
+    image: ouuan/timetagger
+    ports:
+      - 1234:80
+    restart: always
+    volumes:
+      - data:/app/data
+
+volumes:
+  data:
