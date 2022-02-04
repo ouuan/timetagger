@@ -33,6 +33,6 @@ ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
 # RUN pip install -U timetagger
 # RUN pip install -U https://github.com/almarklein/timetagger/archive/main.zip
 
-WORKDIR /root
+WORKDIR /app
 COPY . .
 CMD ["python", "run.py"]
