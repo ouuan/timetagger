@@ -35,4 +35,4 @@ ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
 
 WORKDIR /app
 COPY . .
-CMD ["python", "run.py"]
+CMD ["python", "run.py", "--datadir=data"]
