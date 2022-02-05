@@ -927,9 +927,7 @@ class TopWidget(Widget):
         # Draw some more inside dark banner
         self._draw_header_text(ctx, 60, y1, x2 - 60, y2 - 5)
 
-        now_scale, now_clr = self._get_now_scale()
-        if now_scale != "1D":
-            now_clr = COLORS.button_text
+        now_scale = self._get_now_scale()
 
         # Draw buttons below the dark banner
         # We go from the center to the sides
@@ -989,17 +987,17 @@ class TopWidget(Widget):
         nav_width = ha
         x -= nav_width + 3 + 5  # tiny extra margin between nav button groups
 
-        today_w = 0
-        today_w = self._draw_button(
+        now_w = 0
+        now_w = self._draw_button(
             ctx,
             x,
             y3,
             None,
             h,
-            "Today",
-            "nav_snap_now1D",  # "nav_snap_now" + now_scale,
-            "Snap to now [d]",  # "Snap to now [Home]",
-            {"ref": "topright", "color": now_clr, "font": FONT.condensed},
+            "Now",
+            "nav_snap_now",  # "nav_snap_now" + now_scale,
+            "Snap to now [n]",  # "Snap to now [Home]",
+            {"ref": "topright", "color": COLORS.button_text, "font": FONT.condensed},
         )
 
         self._draw_button(
@@ -1014,7 +1012,7 @@ class TopWidget(Widget):
             {"ref": "topright"},
         )
 
-        x -= today_w + margin
+        x -= now_w + margin
 
         self._draw_tracking_buttons(ctx, x, y3, h)
 
@@ -1269,18 +1267,12 @@ class TopWidget(Widget):
         if nsecs > 180 * 86400:
             now_scale = "1Y"
 
-        # Are we currently on one of the reference scales?
-        now_clr = COLORS.button_text
-        t1_now = dt.floor(now, now_scale)
-        if t1 == t1_now and t2 == dt.add(t1_now, now_scale):
-            now_clr = COLORS.button_text_disabled
-
         # Store for later
         self._current_scale["now"] = now_scale
         self._current_scale["in"] = zoom_in_scale
         self._current_scale["out"] = zoom_out_scale
 
-        return now_scale, now_clr
+        return now_scale
 
     def _draw_header_text(self, ctx, x1, y1, x2, y2):
 
