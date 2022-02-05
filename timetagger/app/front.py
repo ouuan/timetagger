@@ -1472,11 +1472,15 @@ class TopWidget(Widget):
             elif action == "nav_backward" or action == "nav_forward":
                 t1, t2 = self._canvas.range.get_target_range()
                 nsecs = t2 - t1
-                if nsecs < 80000:
+                if nsecs <= 86400:
                     if action == "nav_backward":
-                        self._canvas.range.animate_range(t1 - nsecs, t1, None, False)
+                        self._canvas.range.animate_range(
+                            t1 - nsecs / 2, t2 - nsecs / 2, None, False
+                        )
                     else:
-                        self._canvas.range.animate_range(t2, t2 + nsecs, None, False)
+                        self._canvas.range.animate_range(
+                            t1 + nsecs / 2, t2 + nsecs / 2, None, False
+                        )
                 else:
                     res = self._current_scale["now"]
                     if action == "nav_backward":
