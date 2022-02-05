@@ -1437,6 +1437,8 @@ class TopWidget(Widget):
                         t2 = now + nsecs * 0.4
                     else:
                         t1 = dt.floor(now, res)
+                        if res == "1D":
+                            t1 = dt.add(t1, "6h")  # a day starts at 6:00
                         t2 = dt.add(t1, res)
                 else:
                     t_ref = now if (t1 <= now <= t2) else 0.4 * t1 + 0.6 * t2
