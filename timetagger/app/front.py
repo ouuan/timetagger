@@ -366,8 +366,8 @@ class TimeRange:
         self._animate = None
 
         # Init time to the current full day
-        self._t1 = dt.floor(self._canvas.now(), "1D")
-        self._t2 = dt.add(self._t1, "1D")
+        self._t1 = self._canvas.now() - dt.add(0, "12h") * 0.6
+        self._t2 = dt.add(self._t1, "12h")
         self._t1, self._t2 = self.get_snap_range()  # snap non-animated
 
     def get_range(self):
