@@ -1,5 +1,7 @@
 This is a modified version **WITHOUT authentication**. Use it with other authentication tools and/or locally **at your own risk**!
 
+There are some other modifications based on ouuan's personal preferences. Some modifications may not be documented.
+
 ---
 
 [![CI](https://github.com/almarklein/timetagger/workflows/CI/badge.svg)](https://github.com/almarklein/timetagger/actions)
