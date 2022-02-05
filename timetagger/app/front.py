@@ -952,7 +952,7 @@ class TopWidget(Widget):
                 ha,
                 "fas-\uf077",
                 "nav_backward",
-                "Step backward [↑/pageUp]",
+                "Step backward [k/↑/pageUp]",
                 {"ref": "bottomcenter"},
             )
             updown_w = self._draw_button(
@@ -963,7 +963,7 @@ class TopWidget(Widget):
                 ha,
                 "fas-\uf078",
                 "nav_forward",
-                "Step forward [↓/pageDown]",
+                "Step forward [j/↓/pageDown]",
                 {"ref": "topcenter"},
             )
 
@@ -1339,15 +1339,23 @@ class TopWidget(Widget):
     def _on_key(self, e):
         if e.ctrlKey or e.metaKey or e.altKey:
             return  # don't fight with the browser
-        elif e.key.lower() == "arrowup" or e.key.lower() == "pageup":
+        elif (
+            e.key.lower() == "arrowup"
+            or e.key.lower() == "pageup"
+            or e.key.lower() == "k"
+        ):
             self._handle_button_press("nav_backward")
-        elif e.key.lower() == "arrowdown" or e.key.lower() == "pagedown":
+        elif (
+            e.key.lower() == "arrowdown"
+            or e.key.lower() == "pagedown"
+            or e.key.lower() == "j"
+        ):
             self._handle_button_press("nav_forward")
-        elif e.key.lower() == "arrowleft":
+        elif e.key.lower() == "arrowleft" or e.key.lower() == "h":
             self._handle_button_press("nav_zoom_" + self._current_scale["out"])
-        elif e.key.lower() == "arrowright":
+        elif e.key.lower() == "arrowright" or e.key.lower() == "l":
             self._handle_button_press("nav_zoom_" + self._current_scale["in"])
-        elif e.key.lower() == "home" or e.key.lower() == "end":
+        elif e.key.lower() == "n":
             self._handle_button_press("nav_snap_now" + self._current_scale["now"])
         #
         elif e.key.lower() == "d":
