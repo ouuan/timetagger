@@ -927,7 +927,7 @@ class TopWidget(Widget):
         # Draw some more inside dark banner
         self._draw_header_text(ctx, 60, y1, x2 - 60, y2 - 5)
 
-        now_scale = self._get_now_scale()
+        self._get_now_scale()
 
         # Draw buttons below the dark banner
         # We go from the center to the sides
@@ -1250,7 +1250,6 @@ class TopWidget(Widget):
 
         t1, t2 = self._canvas.range.get_range()  # get_snap_range()
         nsecs = t2 - t1
-        now = self._canvas.now()
 
         # Select closest scale
         for i in range(len(SCALES)):
