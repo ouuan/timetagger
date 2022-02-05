@@ -981,7 +981,7 @@ class TopWidget(Widget):
                 h,
                 "fas-\uf010",
                 "nav_zoom_" + self._current_scale["out"],
-                "Zoom out [←]",
+                "Zoom out [h/←]",
                 {"ref": "ropright"},
             )
             x -= zoom_w + 5
@@ -1031,7 +1031,7 @@ class TopWidget(Widget):
                 h,
                 "fas-\uf00e",
                 "nav_zoom_" + self._current_scale["in"],
-                "Zoom in [→]",
+                "Zoom in [l/→]",
                 {"ref": "ropleft"},
             )
         x += zoom_w + margin
