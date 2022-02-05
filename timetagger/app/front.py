@@ -1463,9 +1463,9 @@ class TopWidget(Widget):
                     if now_is_in_range:
                         t1, t2 = now - 0.5 * (t2 - t1), now + 0.5 * (t2 - t1)
                 else:
-                    t_ref = now if (t1 <= now <= t2) else (t2 + t1) / 2
-                    t1 = dt.floor(t_ref, res)
-                    t2 = dt.add(t1, res)
+                    t_ref = now if now_is_in_range else (t2 + t1) / 2
+                    t1 = t_ref - dt.add(0, res) * 0.6
+                    t2 = t_ref + dt.add(0, res) * 0.4
                 self._canvas.range.animate_range(t1, t2)
             elif action == "nav_backward" or action == "nav_forward":
                 t1, t2 = self._canvas.range.get_target_range()
@@ -2756,9 +2756,9 @@ class RecordsWidget(Widget):
                 if now_is_in_range:
                     t1, t2 = now - 0.5 * (t2 - t1), now + 0.5 * (t2 - t1)
             else:
-                t_ref = now if (t1 <= now <= t2) else (t2 + t1) / 2
-                t1 = dt.floor(t_ref, res)
-                t2 = dt.add(t1, res)
+                t_ref = now if now_is_in_range else (t2 + t1) / 2
+                t1 = t_ref - dt.add(0, res) * 0.6
+                t2 = t_ref + dt.add(0, res) * 0.4
             self._canvas.range.animate_range(t1, t2)
         elif action.startswith("step_"):
             t1, t2 = self._canvas.range.get_target_range()
