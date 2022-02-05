@@ -1266,9 +1266,7 @@ class TopWidget(Widget):
 
         # Overload for "sensible" scales
         now_scale = SCALES[i][0]
-        if nsecs < 3 * 86400:
-            now_scale = "1D"
-        elif nsecs > 180 * 86400:
+        if nsecs > 180 * 86400:
             now_scale = "1Y"
 
         # Are we currently on one of the reference scales?
