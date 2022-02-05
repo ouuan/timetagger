@@ -7,7 +7,7 @@ async function login() {
 
     let el = document.getElementById("result");
 
-    let url = tools.build_api_url("webtoken_for_localhost");
+    let url = tools.build_api_url("unsafe_webtoken");
     let init = {method: "GET", headers:{}};
     let res = await fetch(url, init);
 

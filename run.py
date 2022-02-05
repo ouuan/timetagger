@@ -78,8 +78,8 @@ async def api_handler(request, path):
     # Some endpoints do not require authentication
     if not path and request.method == "GET":
         return 200, {}, "See https://timetagger.readthedocs.io"
-    elif path == "webtoken_for_localhost":
-        return await webtoken_for_localhost(request)
+    elif path == "unsafe_webtoken":
+        return await unsafe_webtoken(request)
 
     # Authenticate and get user db
     try:
@@ -91,17 +91,7 @@ async def api_handler(request, path):
     return await api_handler_triage(request, path, auth_info, db)
 
 
-async def webtoken_for_localhost(request):
-    """An authentication handler that provides a webtoken when the
-    hostname is localhost. If you run TimeTagger on the web, you must
-    implement your own authentication workflow to provide the client
-    with a TimeTagger webtoken. See `get_webtoken_unsafe()` for details.
-    """
-
-    # Establish that we can trust the client
-    # if request.host not in ("localhost", "127.0.0.1"):
-    #     return 403, {}, "forbidden: must be on localhost"
-
+async def unsafe_webtoken(request):
     # Return the webtoken for the default user
     token = await get_webtoken_unsafe("defaultuser")
     return 200, {}, dict(token=token)
