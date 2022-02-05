@@ -1354,7 +1354,7 @@ class TopWidget(Widget):
         elif e.key.lower() == "arrowright" or e.key.lower() == "l":
             self._handle_button_press("nav_zoom_" + self._current_scale["in"])
         elif e.key.lower() == "n":
-            self._handle_button_press("nav_snap_now" + self._current_scale["now"])
+            self._handle_button_press("nav_snap_now")
         #
         elif e.key.lower() == "d":
             self._handle_button_press("nav_snap_now1D")
@@ -1441,8 +1441,8 @@ class TopWidget(Widget):
                     res = res[3:]
                     if len(res) == 0:
                         nsecs = t2 - t1
-                        t1 = now - nsecs / 2
-                        t2 = now + nsecs / 2
+                        t1 = now - nsecs * 0.6
+                        t2 = now + nsecs * 0.4
                     else:
                         t1 = dt.floor(now, res)
                         t2 = dt.add(t1, res)
