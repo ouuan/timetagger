@@ -566,7 +566,7 @@ class TimeSelectionDialog(BaseDialog):
         else:
             return
 
-        t1 = dt.floor(dt.add(dt.now(), "-6h"), rounder)
+        t1 = dt.floor(dt.now(), rounder)
         if last:
             t1 = dt.add(t1, "-" + rounder)
         t2 = dt.add(t1, rounder)
@@ -589,8 +589,6 @@ class TimeSelectionDialog(BaseDialog):
         t2 = str_date_to_time_int(t2_date)
         if t1 > t2:
             t1, t2 = t2, t1
-        t1 = dt.add(t1, "6h")
-        t2 = dt.add(t2, "6h")
         t2 = dt.add(t2, "1D")  # look until the end of the day
 
         window.canvas.range.animate_range(t1, t2, None, False)  # without snap
