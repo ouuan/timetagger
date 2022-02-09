@@ -1016,9 +1016,7 @@ class RecordDialog(BaseDialog):
             </div>
             <div class='container' style='min-height:5px;'>
                 <button type='button' style='float:right; font-size:85%; margin-top:-4px;'>
-                    <i class='fas'>\uf044</i></button>
-                <button type='button' style='float:right; font-size:85%; margin-top:-4px;'>
-                    <b>˅</b> Presets</button>
+                    Presets <i class='fas'>\uf044</i></button>
             </div>
             <div></div>
             <div style='color:#777;'></div>
@@ -1052,7 +1050,6 @@ class RecordDialog(BaseDialog):
         #
         self._ds_input = self._ds_container.children[0]
         self._autocomp_div = self._ds_container.children[1]
-        self._preset_button = self._preset_container.children[1]
         self._preset_edit = self._preset_container.children[0]
         self._title_div = h1.children[1]
         self._cancel_but1 = self.maindiv.children[0].children[-1]
@@ -1101,7 +1098,6 @@ class RecordDialog(BaseDialog):
         self._resume_but.onclick = self.resume_record
         self._ds_input.oninput = self._on_user_edit
         self._ds_input.onchange = self._on_user_edit_done
-        self._preset_button.onclick = self.show_preset_tags
         self._preset_edit.onclick = lambda: self._canvas.tag_preset_dialog.open()
         self._delete_but1.onclick = self._delete1
         self._delete_but2.onclick = self._delete2
@@ -1193,33 +1189,16 @@ class RecordDialog(BaseDialog):
             reset = lambda: self._ds_input.style.setProperty("outline", "")
             window.setTimeout(reset, 2000)
 
-    def show_preset_tags(self, e):
+    def show_preset_and_recent_tags(self, e):
         # Prevent that the click will hide the autocomp
         if e and e.stopPropagation:
             e.stopPropagation()
-        # Get list of preset strings
-        presets = self._get_suggested_tags_presets()
-        # Produce suggestions
         suggestions = []
-        for preset in presets:
+        # Collect presets
+        for preset in self._get_suggested_tags_presets():
             html = preset + "<span class='meta'>preset<span>"
             suggestions.push((preset, html))
-        # Show
-        val = self._ds_input.value.rstrip()
-        if val:
-            val += " "
-        if suggestions:
-            self._autocomp_state = self._get_autocomp_state()
-            self._autocomp_show("Tag presets:", suggestions)
-        else:
-            self._autocomp_show("No presets defined ...", [])
-
-    def show_recent_tags(self, e):
-        # Prevent that the click will hide the autocomp
-        if e and e.stopPropagation:
-            e.stopPropagation()
-        # Collect suggestions
-        suggestions = []
+        # Collect recents
         now = dt.now()
         for tag, tag_t2 in self._suggested_tags_recent:
             date = max(0, int((now - tag_t2) / 86400))
@@ -1229,9 +1208,9 @@ class RecordDialog(BaseDialog):
         # Show
         if suggestions:
             self._autocomp_state = self._get_autocomp_state()
-            self._autocomp_show("Recent tags:", suggestions)
+            self._autocomp_show("Presets & recent tags:", suggestions)
         else:
-            self._autocomp_show("No recent tags ...", suggestions)
+            self._autocomp_show("No presets or recent tags ...", [])
 
     def _autocomp_init(self):
         """Show tag suggestions in the autocompletion dialog."""
@@ -1243,13 +1222,41 @@ class RecordDialog(BaseDialog):
             self._autocomp_clear()
             return
         elif tag_to_be == "#":
-            return self.show_recent_tags()  # Delegate
+            return self.show_preset_and_recent_tags()  # Delegate
 
         # Obtain suggestions
         now = dt.now()
         needle = tag_to_be[1:]  # the tag without the '#'
         matches1 = []
         matches2 = []
+        # Suggestions from presets
+        for preset in self._get_suggested_tags_presets():
+            html = preset + "<span class='meta'>preset<span>"
+            i = preset.indexOf(needle)
+            if i > 0:
+                if preset[i - 1] == "#":
+                    # A tag in the preset startswith the needle
+                    html = (
+                        preset[: i - 1]
+                        + "<b>"
+                        + tag_to_be
+                        + "</b>"
+                        + preset[i + needle.length :]
+                    )
+                    html += "<span class='meta'>preset<span>"
+                    matches1.push((preset, html))
+                elif needle.length >= 2:
+                    # The preset contains the needle, and the needle is more than 1 char
+                    html = (
+                        preset[:i]
+                        + "<b>"
+                        + needle
+                        + "</b>"
+                        + preset[i + needle.length :]
+                    )
+                    html += "<span class='meta'>preset<span>"
+                    matches2.push((preset, html))
+        # Suggestions from recent tags
         for tag, tag_t2 in self._suggested_tags_all:
             i = tag.indexOf(needle)
             if i > 0:
@@ -1272,7 +1279,7 @@ class RecordDialog(BaseDialog):
         # Show
         if suggestions:
             self._autocomp_state = val, i1, i2
-            self._autocomp_show("Matching tags:", suggestions)
+            self._autocomp_show("Matching presets / tags:", suggestions)
         else:
             self._autocomp_clear()
 
@@ -1285,12 +1292,12 @@ class RecordDialog(BaseDialog):
         self._autocomp_div.appendChild(item)
         # Add suggestions
         self._suggested_tags_in_autocomp = []
-        for tag, html in suggestions:
-            self._suggested_tags_in_autocomp.push(tag)
+        for text, html in suggestions:  # text is a tag or a preset
+            self._suggested_tags_in_autocomp.push(text)
             item = document.createElement("div")
             item.classList.add("tag-suggestion")
             item.innerHTML = html
-            onclick = f'window._record_dialog_autocomp_finish("{tag}");'
+            onclick = f'window._record_dialog_autocomp_finish("{text}");'
             item.setAttribute("onclick", onclick)
             self._autocomp_div.appendChild(item)
         # Show
@@ -1324,14 +1331,14 @@ class RecordDialog(BaseDialog):
         self._autocomp_div.hidden = True
         self._autocomp_div.innerHTML = ""
 
-    def _autocomp_finish(self, tag):
+    def _autocomp_finish(self, text):
         self._autocomp_clear()
-        if tag:
+        if text:
             # Compose new description and cursor pos
             val, i1, i2 = self._autocomp_state
-            new_val = val[:i1] + tag + val[i2:]
-            i3 = max(0, i1) + len(tag)
-            # Add a space if the tag is added to the end
+            new_val = val[:i1] + text + val[i2:]
+            i3 = max(0, i1) + len(text)
+            # Add a space if the text is added to the end
             if len(val[i2:].strip()) == 0:
                 new_val = new_val.rstrip() + " "
                 i3 = new_val.length
@@ -1479,7 +1486,8 @@ class RecordDialog(BaseDialog):
     def _get_suggested_tags_presets(self):
         """Get suggested tags based on the presets."""
         item = window.store.settings.get_by_key("tag_presets")
-        return (None if item is None else item.value) or []
+        presets = (None if item is None else item.value) or []
+        return [preset for preset in presets if preset]
 
     def _delete1(self):
         self._delete_but2.style.display = "block"
@@ -1788,12 +1796,11 @@ class TagPresetsDialog(BaseDialog):
         for line in lines1:
             line = line.strip()
             if line:
-                tags, _ = utils.get_tags_and_parts_from_string(to_str(line))
+                tags, _ = utils.get_tags_and_parts_from_string(to_str(line), False)
                 for tag in tags:
                     found_tags[tag] = tag
                 line = tags.join(" ")
-                if line:
-                    lines2.append(line)
+            lines2.append(line)
 
         # Check size
         length = JSON.stringify(lines2).length
@@ -2359,7 +2366,7 @@ class ReportDialog(BaseDialog):
                     continue
                 tagz2 = name_map[tagz1]
                 group = groups[tagz2]
-                group.records.append(record)
+                group.records.push(record)
                 group.t += record.t2 - record.t1
             group_list = groups.values()
 
@@ -2375,7 +2382,7 @@ class ReportDialog(BaseDialog):
                     tdate = "-".join(reversed(date.split("-")))
                     groups[date] = {"title": tdate, "t": 0, "records": []}
                 group = groups[date]
-                group.records.append(record)
+                group.records.push(record)
                 group.t += record.t2 - record.t1
             group_list = groups.values()
 
@@ -2399,13 +2406,13 @@ class ReportDialog(BaseDialog):
                         "records": [],
                     }
                 group = subgroups[date]
-                group.records.append(record)
+                group.records.push(record)
                 group.t += record.t2 - record.t1
             group_list = []
             for subgroups in groups.values():
                 for group in subgroups.values():
                     if group.t:
-                        group_list.append(group)
+                        group_list.push(group)
 
         elif group_method == "date/tagz":
             groups = {}
@@ -2428,17 +2435,23 @@ class ReportDialog(BaseDialog):
                     groups[date] = subgroups
                 subgroups = groups[date]
                 group = subgroups[tagz2]
-                group.records.append(record)
+                group.records.push(record)
                 group.t += record.t2 - record.t1
             group_list = []
             for subgroups in groups.values():
                 for group in subgroups.values():
                     if group.t:
-                        group_list.append(group)
+                        group_list.push(group)
 
         else:
-            group = {"title": "hidden", "t": 0, "records": records}
+            group = {"title": "hidden", "t": 0, "records": []}
             group_list = [group]
+            for i in range(len(records)):
+                record = records[i]
+                tagz1 = window.store.records.tags_from_record(record).join(" ")
+                if tagz1 not in name_map:
+                    continue
+                group.records.push(record)
 
         # Generate rows
         rows = []
