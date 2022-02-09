@@ -407,8 +407,9 @@ class MenuDialog(BaseDialog):
             ("\uf2bd", True, "Account", "../account"),
             ("\uf2f6", not logged_in, "Login", "../login"),
             ("\uf2f5", logged_in, "Logout", "../logout"),
-            (None, is_installable, None, None),
-            ("\uf3fa", is_installable, "<b>Install this app</b>", self._do_install),
+            (None, True, "App", None),
+            ("\uf021", True, "Hard refresh", self._hard_refresh),
+            ("\uf3fa", is_installable, "Install this app", self._do_install),
         ]:
             if not show:
                 continue
@@ -469,6 +470,10 @@ class MenuDialog(BaseDialog):
     def _import(self):
         self.close()
         self._canvas.import_dialog.open()
+
+    def _hard_refresh(self):
+        self.close()
+        window.location.reload(True)
 
 
 class TimeSelectionDialog(BaseDialog):
