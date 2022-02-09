@@ -44,6 +44,9 @@ body.darkmode .dialog.verticalmenu {
     font-size: 90%;
     color: #999;
 }
+.verticalmenu a {
+    cursor: pointer;
+}
 .verticalmenu a:hover, .verticalmenu a.fas {
     text-decoration: none;
     background: rgba(127, 127, 127, 0.1);
