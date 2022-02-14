@@ -720,6 +720,24 @@ class StartStopEdit:
     def close(self):
         window.clearInterval(self._timer_handle)
 
+    def change_mode(self, mode):
+        def check_display_and_click(radio):
+            if (
+                radio.parentNode.style.display != "none"
+                and radio.parentNode.parentNode.style.display != "none"
+            ):
+                radio.click()
+                return True
+            return False
+
+        if mode == "startnow":
+            return check_display_and_click(self.radio_startnow)
+        if mode == "startrlr":
+            return check_display_and_click(self.radio_startrlr)
+        if mode == "finished":
+            return check_display_and_click(self.radio_finished)
+        return False
+
     def _on_mode_change(self):
         if self.initialmode in ("start", "new"):
             # Get sensible earlier time
@@ -1133,22 +1151,22 @@ class RecordDialog(BaseDialog):
             fns = te.radio_finished
             if e.shiftKey:
                 if now.checked:
-                    fns.click()
+                    te.change_mode("finished")
                 elif rlr.checked:
-                    now.click()
-                    self._ds_input.focus()
+                    if te.change_mode("startnow"):
+                        self._ds_input.focus()
                 elif fns.checked:
-                    if te.time2input == document.activeElement:
-                        te.time1input.focus()
-                    rlr.click()
+                    if te.change_mode("startrlr"):
+                        if te.time2input == document.activeElement:
+                            te.time1input.focus()
             else:
                 if now.checked:
-                    rlr.click()
+                    te.change_mode("startrlr")
                 elif rlr.checked:
-                    fns.click()
+                    te.change_mode("finished")
                 elif fns.checked:
-                    now.click()
-                    self._ds_input.focus()
+                    if te.change_mode("startnow"):
+                        self._ds_input.focus()
             return True
         return False
 
@@ -1156,10 +1174,11 @@ class RecordDialog(BaseDialog):
         if not self._tab_change_mode(e):
             te = self._time_edit
             if e.key.lower() == "j":
-                if te.radio_startnow.checked:
-                    te.radio_startrlr.click()
-                te.time1input.focus()
                 e.preventDefault()
+                if te.radio_startnow.checked:
+                    if not te.change_mode("startrlr"):
+                        return
+                te.time1input.focus()
             elif e.key.lower() == "k":
                 e.preventDefault()
 
@@ -1173,10 +1192,11 @@ class RecordDialog(BaseDialog):
                 te.onchanged("time1more")
                 e.preventDefault()
             elif e.key.lower() == "j":
-                if not te.radio_finished.checked:
-                    te.radio_finished.click()
-                te.time2input.focus()
                 e.preventDefault()
+                if not te.radio_finished.checked:
+                    if not te.change_mode("finished"):
+                        return
+                te.time2input.focus()
             elif e.key.lower() == "k":
                 self._ds_input.focus()
                 e.preventDefault()
