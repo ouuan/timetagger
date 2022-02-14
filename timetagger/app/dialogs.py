@@ -1526,7 +1526,7 @@ class RecordDialog(BaseDialog):
                     e.preventDefault()
                 return
             elif key == "escape":
-                self._autocomp_clear()
+                self._autocomp_finish("")
                 return
             elif key == "arrowdown" or (key == "tab" and not e.shiftKey):
                 self._autocomp_make_active(self._autocomp_index + 1)
