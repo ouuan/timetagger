@@ -1175,7 +1175,9 @@ class RecordDialog(BaseDialog):
     def _ds_input_on_keydown(self, e):
         if not self._tab_change_mode(e):
             te = self._time_edit
-            if e.key.lower() == "arrowdown":
+            if e.key.lower() == "arrowdown" or (
+                (e.key.lower() == "enter" or e.key.lower() == "return") and e.ctrlKey
+            ):
                 if not self._autocomp_div.hidden:
                     return
                 e.preventDefault()
@@ -1536,7 +1538,7 @@ class RecordDialog(BaseDialog):
                 self._autocomp_make_active(self._autocomp_index - 1)
                 e.preventDefault()
                 return
-        if key == "enter" or key == "return":
+        if (key == "enter" or key == "return") and not e.ctrlKey:
             self.submit()
         else:
             super()._on_key(e)
