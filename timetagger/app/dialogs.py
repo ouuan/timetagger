@@ -1144,6 +1144,8 @@ class RecordDialog(BaseDialog):
 
     def _tab_change_mode(self, e):
         if e.key.lower() == "tab":
+            if not self._autocomp_div.hidden:
+                return True
             e.preventDefault()
             te = self._time_edit
             now = te.radio_startnow
@@ -1174,6 +1176,8 @@ class RecordDialog(BaseDialog):
         if not self._tab_change_mode(e):
             te = self._time_edit
             if e.key.lower() == "arrowdown":
+                if not self._autocomp_div.hidden:
+                    return
                 e.preventDefault()
                 if te.radio_startnow.checked:
                     if not te.change_mode("startrlr"):
@@ -1405,24 +1409,27 @@ class RecordDialog(BaseDialog):
 
     def _autocomp_make_active(self, index):
         autocomp_count = len(self._suggested_tags_in_autocomp)
-        # Correct index (wrap around)
-        while index < 0:
-            index += autocomp_count
-        self._autocomp_index = index % autocomp_count
         if not autocomp_count:
             return
-        # Apply
-        self._autocomp_active_tag = self._suggested_tags_in_autocomp[
-            self._autocomp_index
-        ]
-        # Fix css class
+        self._autocomp_index = index % (autocomp_count + 1)
+        if self._autocomp_index < 0:
+            self._autocomp_index += autocomp_count + 1
+
+        if self._autocomp_index == 0:
+            self._autocomp_active_tag = ""
+        else:
+            self._autocomp_active_tag = self._suggested_tags_in_autocomp[
+                self._autocomp_index - 1
+            ]
+        self._autocomp_update_text(self._autocomp_active_tag)
+
         for i in range(self._autocomp_div.children.length):
             self._autocomp_div.children[i].classList.remove("active")
-        child_index = self._autocomp_index + 1
-        active_child = self._autocomp_div.children[child_index]
-        active_child.classList.add("active")
-        # Make corresponding item visible
-        active_child.scrollIntoView({"block": "nearest"})
+        if self._autocomp_index != 0:
+            active_child = self._autocomp_div.children[self._autocomp_index]
+            active_child.classList.add("active")
+            # Make corresponding item visible
+            active_child.scrollIntoView({"block": "nearest"})
 
     def _autocomp_clear(self):
         self._autocomp_index = 0
@@ -1430,23 +1437,23 @@ class RecordDialog(BaseDialog):
         self._autocomp_div.hidden = True
         self._autocomp_div.innerHTML = ""
 
-    def _autocomp_finish(self, text):
-        self._autocomp_clear()
+    def _autocomp_update_text(self, text):
+        val, i1, i2 = self._autocomp_state
         if text:
-            # Compose new description and cursor pos
-            val, i1, i2 = self._autocomp_state
             new_val = val[:i1] + text + val[i2:]
             i3 = max(0, i1) + len(text)
-            # Add a space if the text is added to the end
-            if len(val[i2:].strip()) == 0:
-                new_val = new_val.rstrip() + " "
-                i3 = new_val.length
-            # Apply
-            self._ds_input.value = new_val
-            self._ds_input.selectionStart = self._ds_input.selectionEnd = i3
-            if utils.looks_like_desktop():
-                self._ds_input.focus()
+        else:
+            new_val = val
+            i3 = len(new_val)
+        self._ds_input.value = new_val
+        self._ds_input.selectionStart = self._ds_input.selectionEnd = i3
         self._show_tags_from_ds()
+
+    def _autocomp_finish(self, text):
+        self._autocomp_clear()
+        self._autocomp_update_text(text)
+        if utils.looks_like_desktop():
+            self._ds_input.focus()
 
     def _add_tag(self, tag):
         self._ds_input.value = self._ds_input.value.rstrip() + " " + tag + " "
@@ -1513,18 +1520,19 @@ class RecordDialog(BaseDialog):
     def _on_key(self, e):
         key = e.key.lower()
         if not self._autocomp_div.hidden:
-            if key == "enter" or key == "return" or key == "tab":
+            if key == "enter" or key == "return" or key == " ":
                 self._autocomp_finish(self._autocomp_active_tag)
-                e.preventDefault()
+                if key != " ":
+                    e.preventDefault()
                 return
             elif key == "escape":
                 self._autocomp_clear()
                 return
-            elif key == "arrowdown":
+            elif key == "arrowdown" or (key == "tab" and not e.shiftKey):
                 self._autocomp_make_active(self._autocomp_index + 1)
                 e.preventDefault()
                 return
-            elif key == "arrowup":
+            elif key == "arrowup" or (key == "tab" and e.shiftKey):
                 self._autocomp_make_active(self._autocomp_index - 1)
                 e.preventDefault()
                 return
