@@ -1120,6 +1120,82 @@ class RecordDialog(BaseDialog):
         if utils.looks_like_desktop():
             self._ds_input.focus()
 
+        self._ds_input.onkeydown = self._ds_input_on_keydown
+        self._time_edit.time1input.onkeydown = self._time1_on_keydown
+        self._time_edit.time2input.onkeydown = self._time2_on_keydown
+
+    def _tab_change_mode(self, e):
+        if e.key.lower() == "tab":
+            e.preventDefault()
+            te = self._time_edit
+            now = te.radio_startnow
+            rlr = te.radio_startrlr
+            fns = te.radio_finished
+            if e.shiftKey:
+                if now.checked:
+                    fns.click()
+                elif rlr.checked:
+                    now.click()
+                    self._ds_input.focus()
+                elif fns.checked:
+                    if te.time2input == document.activeElement:
+                        te.time1input.focus()
+                    rlr.click()
+            else:
+                if now.checked:
+                    rlr.click()
+                elif rlr.checked:
+                    fns.click()
+                elif fns.checked:
+                    now.click()
+                    self._ds_input.focus()
+            return True
+        return False
+
+    def _ds_input_on_keydown(self, e):
+        if not self._tab_change_mode(e):
+            te = self._time_edit
+            if e.key.lower() == "j":
+                if te.radio_startnow.checked:
+                    te.radio_startrlr.click()
+                te.time1input.focus()
+                e.preventDefault()
+            elif e.key.lower() == "k":
+                e.preventDefault()
+
+    def _time1_on_keydown(self, e):
+        if not self._tab_change_mode(e):
+            te = self._time_edit
+            if e.key.lower() == "h":
+                te.onchanged("time1less")
+                e.preventDefault()
+            elif e.key.lower() == "l":
+                te.onchanged("time1more")
+                e.preventDefault()
+            elif e.key.lower() == "j":
+                if not te.radio_finished.checked:
+                    te.radio_finished.click()
+                te.time2input.focus()
+                e.preventDefault()
+            elif e.key.lower() == "k":
+                self._ds_input.focus()
+                e.preventDefault()
+
+    def _time2_on_keydown(self, e):
+        if not self._tab_change_mode(e):
+            te = self._time_edit
+            if e.key.lower() == "h":
+                te.onchanged("time2less")
+                e.preventDefault()
+            elif e.key.lower() == "l":
+                te.onchanged("time2more")
+                e.preventDefault()
+            elif e.key.lower() == "j":
+                e.preventDefault()
+            elif e.key.lower() == "k":
+                te.time1input.focus()
+                e.preventDefault()
+
     def _set_mode(self, mode):
         self._lmode = lmode = mode.lower()
         self._title_div.innerText = f"{mode} record"
