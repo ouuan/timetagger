@@ -629,16 +629,16 @@ class StartStopEdit:
             <input type='date' step='1'  style='font-size: 80%;' />
             <span style='display: flex;'>
                 <input type='text' style='flex:1; min-width: 50px; font-size: 80%;' />
-                <button type='button' style='width:2em; margin-left:-1px;'>+</button>
                 <button type='button' style='width:2em; margin-left:-1px;'>-</button>
+                <button type='button' style='width:2em; margin-left:-1px;'>+</button>
                 </span>
             <span></span>
         <span><i class='fas' style='color:#999; vertical-align:middle;'>\uf28d</i></span>
             <input type='date' step='1' style='font-size: 80%;' />
             <span style='display: flex;'>
                 <input type='text' style='flex:1; min-width: 50px; font-size: 80%;' />
-                <button type='button' style='width:2em; margin-left:-1px;'>+</button>
                 <button type='button' style='width:2em; margin-left:-1px;'>-</button>
+                <button type='button' style='width:2em; margin-left:-1px;'>+</button>
                 </span>
             <span></span>
         <span><i class='fas' style='color:#999; vertical-align:middle;'>\uf2f2</i></span>
@@ -669,8 +669,8 @@ class StartStopEdit:
             _,
         ) = self.gridnode.children
 
-        self.time1input, self.time1more, self.time1less = self.time1stuff.children
-        self.time2input, self.time2more, self.time2less = self.time2stuff.children
+        self.time1input, self.time1less, self.time1more = self.time1stuff.children
+        self.time2input, self.time2less, self.time2more = self.time2stuff.children
 
         # Tweaks
         for but in (self.time1less, self.time1more, self.time2less, self.time2more):
