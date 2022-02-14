@@ -1173,14 +1173,12 @@ class RecordDialog(BaseDialog):
     def _ds_input_on_keydown(self, e):
         if not self._tab_change_mode(e):
             te = self._time_edit
-            if e.key.lower() == "j":
+            if e.key.lower() == "arrowdown":
                 e.preventDefault()
                 if te.radio_startnow.checked:
                     if not te.change_mode("startrlr"):
                         return
                 te.time1input.focus()
-            elif e.key.lower() == "k":
-                e.preventDefault()
 
     def _time1_on_keydown(self, e):
         if not self._tab_change_mode(e):
