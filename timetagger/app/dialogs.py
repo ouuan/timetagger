@@ -742,17 +742,17 @@ class StartStopEdit:
         if self.initialmode in ("start", "new"):
             # Get sensible earlier time
             t2 = dt.now()
-            secs_earlier = 8 * 3600  # 8 hours
-            running = records = window.store.records.get_running_records()
+            secs_earlier = 1800
+            running = window.store.records.get_running_records()
             records = window.store.records.get_records(t2 - secs_earlier, t2).values()
             if running:
-                t1 = t2 - 300  # 5 min earlier
+                t1 = t2 - 300
             elif len(records) > 0:
                 records.sort(key=lambda r: r.t2)
-                t1 = records[-1].t2  # start time == last records stop time
+                t1 = records[-1].t2 + 60
                 t1 = min(t1, t2 - 1)
             else:
-                t1 = t2 - 3600  # start time is an hour ago
+                t1 = t2 - 600
             # Apply
             if self.radio_startnow.checked:
                 self.reset(t2, t2)
