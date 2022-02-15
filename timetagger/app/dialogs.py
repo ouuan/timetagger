@@ -1196,10 +1196,18 @@ class RecordDialog(BaseDialog):
         if not self._tab_change_mode(e):
             te = self._time_edit
             if e.key.lower() == "h":
-                te.onchanged("time1less")
+                if e.shiftKey:
+                    for _ in range(6):
+                        te.onchanged("time1less")
+                else:
+                    te.onchanged("time1less")
                 e.preventDefault()
             elif e.key.lower() == "l":
-                te.onchanged("time1more")
+                if e.shiftKey:
+                    for _ in range(6):
+                        te.onchanged("time1more")
+                else:
+                    te.onchanged("time1more")
                 e.preventDefault()
             elif e.key.lower() == "j":
                 e.preventDefault()
@@ -1215,10 +1223,18 @@ class RecordDialog(BaseDialog):
         if not self._tab_change_mode(e):
             te = self._time_edit
             if e.key.lower() == "h":
-                te.onchanged("time2less")
+                if e.shiftKey:
+                    for _ in range(6):
+                        te.onchanged("time2less")
+                else:
+                    te.onchanged("time2less")
                 e.preventDefault()
             elif e.key.lower() == "l":
-                te.onchanged("time2more")
+                if e.shiftKey:
+                    for _ in range(6):
+                        te.onchanged("time2more")
+                else:
+                    te.onchanged("time2more")
                 e.preventDefault()
             elif e.key.lower() == "j":
                 e.preventDefault()
