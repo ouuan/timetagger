@@ -1037,9 +1037,13 @@ class RecordDialog(BaseDialog):
                 <input type='text' style='width:100%;' spellcheck='false' />
                 <div class='tag-suggestions-autocomp'></div>
             </div>
-            <div class='container' style='min-height:5px;'>
-                <button type='button' style='float:right; font-size:85%; margin-top:-4px;'>
-                    Presets <i class='fas'>\uf044</i></button>
+            <div class='container' style='display: flex; justify-content: flex-end; min-height:5px;'>
+                <button type='button' style='font-size:85%; margin-top:-4px;'>
+                    <i class='fas'>\uf292</i>
+                </button>
+                <button type='button' style='font-size:85%; margin-top:-4px;'>
+                    Presets <i class='fas'>\uf044</i>
+                </button>
             </div>
             <div></div>
             <div style='color:#777;'></div>
@@ -1073,7 +1077,8 @@ class RecordDialog(BaseDialog):
         #
         self._ds_input = self._ds_container.children[0]
         self._autocomp_div = self._ds_container.children[1]
-        self._preset_edit = self._preset_container.children[0]
+        self._hashtag_button = self._preset_container.children[0]
+        self._preset_edit = self._preset_container.children[1]
         self._title_div = h1.children[1]
         self._cancel_but1 = self.maindiv.children[0].children[-1]
         (
@@ -1121,6 +1126,7 @@ class RecordDialog(BaseDialog):
         self._resume_but.onclick = self.resume_record
         self._ds_input.oninput = self._on_user_edit
         self._ds_input.onchange = self._on_user_edit_done
+        self._hashtag_button.onclick = self._on_hashtag_button_click
         self._preset_edit.onclick = lambda: self._canvas.tag_preset_dialog.open()
         self._delete_but1.onclick = self._delete1
         self._delete_but2.onclick = self._delete2
@@ -1615,6 +1621,17 @@ class RecordDialog(BaseDialog):
         for record in records:
             record.t2 = max(record.t1 + 10, t2)
             window.store.records.put(record)
+
+    def _on_hashtag_button_click(self, e):
+        ds = self._ds_input
+        if len(ds.value) and ds.value[-1] != " ":
+            ds.value += " #"
+        else:
+            ds.value += "#"
+        ds.focus()
+        ds.selectionStart = ds.selectionEnd = len(ds.value)
+        self._on_user_edit()
+        e.stopPropagation()
 
     def submit(self):
         """Submit the record to the store."""
