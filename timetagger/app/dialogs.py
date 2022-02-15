@@ -1039,11 +1039,7 @@ class RecordDialog(BaseDialog):
             </div>
             <div class='container' style='min-height:5px;'>
                 <button type='button' style='float:right; font-size:85%; margin-top:-4px;'>
-                    <i class='fas'>\uf044</i></button>
-                <button type='button' style='float:right; font-size:85%; margin-top:-4px;'>
-                    Presets <i class='fas'>\uf0d7</i></button>
-                <button type='button' style='float:right; font-size:85%; margin-top:-4px;'>
-                    Recent <i class='fas'>\uf0d7</i></button>
+                    Presets <i class='fas'>\uf044</i></button>
             </div>
             <div></div>
             <div style='color:#777;'></div>
@@ -1077,8 +1073,6 @@ class RecordDialog(BaseDialog):
         #
         self._ds_input = self._ds_container.children[0]
         self._autocomp_div = self._ds_container.children[1]
-        self._recent_but = self._preset_container.children[2]
-        self._preset_but = self._preset_container.children[1]
         self._preset_edit = self._preset_container.children[0]
         self._title_div = h1.children[1]
         self._cancel_but1 = self.maindiv.children[0].children[-1]
@@ -1127,8 +1121,6 @@ class RecordDialog(BaseDialog):
         self._resume_but.onclick = self.resume_record
         self._ds_input.oninput = self._on_user_edit
         self._ds_input.onchange = self._on_user_edit_done
-        self._recent_but.onclick = self.show_recents
-        self._preset_but.onclick = self.show_presets
         self._preset_edit.onclick = lambda: self._canvas.tag_preset_dialog.open()
         self._delete_but1.onclick = self._delete1
         self._delete_but2.onclick = self._delete2
@@ -1302,44 +1294,28 @@ class RecordDialog(BaseDialog):
             reset = lambda: self._ds_input.style.setProperty("outline", "")
             window.setTimeout(reset, 2000)
 
-    def show_presets(self, e):
+    def show_preset_and_recent_tags(self, e):
         # Prevent that the click will hide the autocomp
         if e and e.stopPropagation:
             e.stopPropagation()
-        self.show_presets_and_recents(True, False)
-
-    def show_recents(self, e):
-        # Prevent that the click will hide the autocomp
-        if e and e.stopPropagation:
-            e.stopPropagation()
-        self.show_presets_and_recents(False, True)
-
-    def show_presets_and_recents(self, presets=True, recents=True):
         suggestions = []
-        types = []
         # Collect presets
-        if presets:
-            types.push("presets")
-            for preset in self._get_suggested_tags_presets():
-                html = preset + "<span class='meta'>preset<span>"
-                suggestions.push((preset, html))
+        for preset in self._get_suggested_tags_presets():
+            html = preset + "<span class='meta'>preset<span>"
+            suggestions.push((preset, html))
         # Collect recents
-        if recents:
-            types.push("recent tags")
-            now = dt.now()
-            for tag, tag_t2 in self._suggested_tags_recent:
-                date = max(0, int((now - tag_t2) / 86400))
-                date = {0: "today", 1: "yesterday"}.get(date, date + " days ago")
-                html = tag + "<span class='meta'>recent: " + date + "<span>"
-                suggestions.push((tag, html))
+        now = dt.now()
+        for tag, tag_t2 in self._suggested_tags_recent:
+            date = max(0, int((now - tag_t2) / 86400))
+            date = {0: "today", 1: "yesterday"}.get(date, date + " days ago")
+            html = tag + "<span class='meta'>recent: " + date + "<span>"
+            suggestions.push((tag, html))
         # Show
-        if not types:
-            self._autocomp_clear()
-        elif suggestions:
+        if suggestions:
             self._autocomp_state = self._get_autocomp_state()
-            self._autocomp_show(types.join(" & ") + ":", suggestions)
+            self._autocomp_show("Presets & recent tags:", suggestions)
         else:
-            self._autocomp_show("No " + types.join(" or ") + " ...", [])
+            self._autocomp_show("No presets or recent tags ...", [])
 
     def _autocomp_init(self):
         """Show tag suggestions in the autocompletion dialog."""
@@ -1351,7 +1327,7 @@ class RecordDialog(BaseDialog):
             self._autocomp_clear()
             return
         elif tag_to_be == "#":
-            return self.show_presets_and_recents()  # Delegate
+            return self.show_preset_and_recent_tags()  # Delegate
 
         # Obtain suggestions
         now = dt.now()
