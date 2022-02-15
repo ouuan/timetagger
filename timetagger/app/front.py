@@ -1174,6 +1174,12 @@ class TopWidget(Widget):
                 stop_tt += " " + tagz
                 if window.localsettings.get("show_stopwatch", True):
                     running_summary = dt.duration_string(now - records[0].t1, True)
+                    if records[0].ds:
+                        running_summary += " " + (
+                            records[0].ds[:27] + "..."
+                            if len(records[0].ds) > 30
+                            else records[0].ds
+                        )
                     pomo = self._canvas.pomodoro_dialog.time_left()
                     if pomo:
                         running_summary = pomo + " | " + running_summary
