@@ -388,9 +388,9 @@ class MenuDialog(BaseDialog):
         loggedinas.innerText = text
 
         whatsnew = "What's new"
-        whatsnew_url = "https://github.com/almarklein/timetagger/releases"
+        whatsnew_url = "https://github.com/ouuan/timetagger/commits"
         if window.timetaggerversion:
-            whatsnew += " in version " + window.timetaggerversion.lstrip("v")
+            whatsnew += " in version " + window.timetaggerversion
 
         container = self.maindiv
         for icon, show, title, func in [

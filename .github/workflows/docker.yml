@@ -10,6 +10,14 @@ jobs:
   docker-publish:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get version
+        id: version
+        run: echo ::set-output name=version::$(printf "ouuan-r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)")
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
@@ -26,6 +34,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           file: Dockerfile
+          build-args: version=${{ steps.version.outputs.version }}
           push: true
           tags: |
             ouuan/timetagger:latest

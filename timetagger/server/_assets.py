@@ -14,10 +14,9 @@ import pscript
 import markdown
 
 from . import _utils as utils
-from .. import __version__
 
 
-versionstring = "v" + __version__
+versionstring = "change_this_in_dockerfile"
 
 
 logger = logging.getLogger("asgineer")
