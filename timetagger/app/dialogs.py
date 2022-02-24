@@ -3318,6 +3318,7 @@ class SettingsDialog(BaseDialog):
             "_other": "<b>Other</b>",
             "s": "Start the timer or add an earlier record",
             "S": "Resume the current/previous record",
+            "L": "Edit the last record inside the screen",
             "x": "Stop the timer",
             "t": "Select time range",
             "r": "Open report dialog",

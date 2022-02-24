@@ -1350,7 +1350,23 @@ class TopWidget(Widget):
         elif e.key.lower() == "arrowleft" or e.key.lower() == "h":
             self._handle_button_press("nav_zoom_" + self._current_scale["out"])
         elif e.key.lower() == "arrowright" or e.key.lower() == "l":
-            self._handle_button_press("nav_zoom_" + self._current_scale["in"])
+            if e.shiftKey and e.key.lower() == "l":
+                records = window.store.records.get_records(
+                    *window.canvas.range.get_range()
+                ).values()
+                if len(records):
+                    max_t2 = 0
+                    last_record = records[-1]
+                    for record in records:
+                        if record.t2 > max_t2:
+                            last_record = record
+                    self._canvas.record_dialog.open(
+                        "Edit",
+                        last_record,
+                        window.canvas.widgets["RecordsWidget"]._selected_record_updated,
+                    )
+            else:
+                self._handle_button_press("nav_zoom_" + self._current_scale["in"])
         elif e.key.lower() == "n":
             self._handle_button_press("nav_snap_now")
         #
