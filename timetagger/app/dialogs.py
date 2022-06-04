@@ -3561,12 +3561,22 @@ class SettingsDialog(BaseDialog):
                 <button type='button'><i class='fas'>\uf00d</i></button>
             </h1>
             <center style='font-size:80%'>Settings for this device</center>
-            <h2><i class='fas'>\uf042</i>&nbsp;&nbsp;Dark/light mode</h2>
-            <select>
-                <option value=0>Auto detect</option>
-                <option value=1>Light mode</option>
-                <option value=2>Dark mode</option>
-            </select>
+            <h2><i class='fas'>\uf3fa</i>&nbsp;&nbsp;Appearance</h2>
+            <div class='formlayout'>
+                <div>Light / dark:</div>
+                <select>
+                    <option value=0>Auto detect</option>
+                    <option value=1>Light mode</option>
+                    <option value=2>Dark mode</option>
+                </select>
+                <div>Width:</div>
+                <select>
+                    <option value='auto'>Auto scale</option>
+                    <option value='1000'>Max 1000px</option>
+                    <option value='1500'>Max 1500px</option>
+                    <option value='full'>Full width</option>
+                </select>
+            </div>
             <h2><i class='fas'>\uf2f2</i>&nbsp;&nbsp;Pomodoro</h2>
             <label>
                 <input type='checkbox' checked='false'></input>
@@ -3590,8 +3600,8 @@ class SettingsDialog(BaseDialog):
         (
             _,  # Dialog title
             _,  # Section: per device
-            _,  # Darmode header
-            self._darkmode_select,
+            _,  # Appearance header
+            self._appearance_form,
             _,  # Pomodoro header
             self._pomodoro_label,
             _,  # Misc header
@@ -3610,10 +3620,19 @@ class SettingsDialog(BaseDialog):
         s += " summertime" if offset == offset_summer else " wintertime"
         self._timezone_div.innerText = s
 
-        # Darkmode
+        # Unpack appearance
+        self._darkmode_select = self._appearance_form.children[1]
+        self._width_mode_select = self._appearance_form.children[3]
+
+        # Dark mode
         self._darkmode_select.onchange = self._on_darkmode_change
         darkmode = window.localsettings.get("darkmode", 1)
         self._darkmode_select.value = darkmode
+
+        # Width mode
+        self._width_mode_select.onchange = self._on_width_mode_change
+        width_mode = window.localsettings.get("width_mode", "auto")
+        self._width_mode_select.value = width_mode
 
         # Pomodoro
         self._pomodoro_check = self._pomodoro_label.children[0]
@@ -3634,6 +3653,13 @@ class SettingsDialog(BaseDialog):
         window.localsettings.set("darkmode", darkmode)
         if window.front:
             window.front.set_colors()
+
+    def _on_width_mode_change(self):
+        width_mode = self._width_mode_select.value
+        window.localsettings.set("width_mode", width_mode)
+        if window.front:
+            window.front.set_width_mode(width_mode)
+            self._canvas._on_js_resize_event()  # private method, but ah well
 
     def _on_pomodoro_check(self):
         pomo_enabled = bool(self._pomodoro_check.checked)
