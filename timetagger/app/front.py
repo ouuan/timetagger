@@ -69,7 +69,6 @@ def set_width_mode():
 
 # Also see e.g. https://www.canva.com/colors/color-wheel/
 def set_colors():
-
     # Dark vs light mode
     mode = mode = window.simplesettings.get("darkmode")
     if mode == 1:
@@ -262,7 +261,6 @@ class TimeTaggerCanvas(BaseCanvas):
         FONT.default = FONT.condensed if self.w < 450 else FONT.wide
 
     def on_draw(self, ctx):
-
         # Set current moment as consistent reference for "now"
         self._now = dt.now()
 
@@ -895,7 +893,6 @@ class TopWidget(Widget):
         self._canvas.node.addEventListener("keydown", self._on_key, 0)
 
     def on_draw(self, ctx, menu_only=False):
-
         self._picker.clear()
         x1, y1, x2, y2 = self.rect
 
@@ -1063,7 +1060,6 @@ class TopWidget(Widget):
         )
 
     def _draw_menu_button(self, ctx, x1, y1, x2, y2):
-
         if window.store.__name__.startswith("Demo"):
             text = "Demo"
         elif window.store.__name__.startswith("Sandbox"):
@@ -1277,7 +1273,6 @@ class TopWidget(Widget):
         return x0 - x
 
     def _get_now_scale(self):
-
         t1, t2 = self._canvas.range.get_range()  # get_snap_range()
         nsecs = t2 - t1
 
@@ -1304,7 +1299,6 @@ class TopWidget(Widget):
         return now_scale
 
     def _draw_header_text(self, ctx, x1, y1, x2, y2):
-
         header = self._canvas.range.get_context_header() + " "  # margin
 
         x3 = (x2 + x1) / 2
@@ -1785,7 +1779,6 @@ class RecordsWidget(Widget):
             ctx.fillRect(x1, y2_snap, x2 - x1, y2 - y2_snap)
 
     def _draw_record_area(self, ctx, x1, x2, x3, y1, y2):
-
         t1, t2 = self._canvas.range.get_range()
 
         # Determine whether to draw records or stats, and how many
@@ -1930,7 +1923,6 @@ class RecordsWidget(Widget):
         # Iteratively merge clusters
         distance = 40 + 8
         for iter in range(5):  # while-loop with max 5 iters, just in case
-
             # Try merging clusters if they're close. Do this from back to front,
             # so we can merge multiple together in one pass
             merged_a_cluster = False
@@ -2388,7 +2380,6 @@ class RecordsWidget(Widget):
                 ctx.fillText(duration_text, 0.5 * (x1 + x2), 0.5 * (ry1 + ry2))
 
     def _draw_stats(self, ctx, t1, t2, x1, y1, x2, y2, stat_period, hover):
-
         # Determine header for this block
         t = 0.5 * (t1 + t2)
         if stat_period == "1Y":
@@ -2924,7 +2915,6 @@ class AnalyticsWidget(Widget):
         self._tag_bars_dict = {}  # tagz -> bar-info
 
     def on_draw(self, ctx):
-
         x1, y1, x2, y2 = self.rect
         self._picker.clear()
 
@@ -2987,7 +2977,6 @@ class AnalyticsWidget(Widget):
 
         # Show some help if no records are shown
         if (not self._tag_bars_dict) and (not self.selected_tags):
-
             t1, t2 = self._canvas.range.get_range()
             if t1 < self._canvas.now() < t2:
                 ctx.textAlign = "left"
@@ -3458,7 +3447,6 @@ class AnalyticsWidget(Widget):
                 )
 
     def on_pointer(self, ev):
-
         x, y = ev.pos[0], ev.pos[1]
 
         if "down" in ev.type:

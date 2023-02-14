@@ -1753,7 +1753,6 @@ class TagComboDialog(BaseDialog):
     """Dialog to configure a combination of tags."""
 
     def open(self, tags, callback):
-
         # Put in deterministic order
         if isinstance(tags, str):
             tags = tags.split(" ")
@@ -1831,7 +1830,6 @@ class TagDialog(BaseDialog):
     """Dialog to configure a singleton tag."""
 
     def open(self, tags, callback=None):
-
         # Put in deterministic order
         if isinstance(tags, str):
             tags = tags.split(" ")
@@ -2100,7 +2098,6 @@ class TagRenameDialog(BaseDialog):
     """Dialog to rename tags."""
 
     def open(self, tags, callback=None):
-
         # Put in deterministic order
         if isinstance(tags, str):
             tags = tags.split(" ")
@@ -2222,7 +2219,6 @@ class TagRenameDialog(BaseDialog):
         self._button_replace_comfirm.style.visibility = "visible"
 
     def _really_replace_all(self):
-
         search_tags = self._tags1
         replacement_tags = self._tags2
 
@@ -2262,7 +2258,6 @@ class TagManageDialog(BaseDialog):
     """Dialog to manage tags."""
 
     def open(self):
-
         self.maindiv.innerHTML = """
             <h1><i class='fas'>\uf02b</i>&nbsp;&nbsp;Search & manage tags
                 <button type='button'><i class='fas'>\uf00d</i></button>
@@ -2685,7 +2680,6 @@ class ReportDialog(BaseDialog):
         window.canvas.range.animate_range(t1, t2, None, False)  # without snap
 
     def _generate_table_rows(self, t1, t2):
-
         showrecords = self._showrecords_but.checked
 
         if self._hourdecimals_but.checked:
@@ -2974,7 +2968,6 @@ class ReportDialog(BaseDialog):
         document.body.removeChild(a)
 
     def _save_as_pdf(self):
-
         # Configure
         width, height = 210, 297  # A4
         margin = 20  # mm
@@ -3031,7 +3024,6 @@ class ReportDialog(BaseDialog):
         # Draw table
         npages = 1
         for chunknr in range(len(chunks)):
-
             # Maybe insert a page break early to preserve whole chunks
             space_used = y - margin
             space_total = height - 2 * margin
@@ -3045,7 +3037,6 @@ class ReportDialog(BaseDialog):
                     y = margin
 
             for rownr, row in enumerate(chunks[chunknr]):
-
                 # Add page break?
                 if (y + rowheight) > (height - margin):
                     doc.addPage()
@@ -3549,7 +3540,6 @@ class SettingsDialog(BaseDialog):
         super().__init__(canvas)
 
     def open(self, callback=None):
-
         # Get shortcuts html
         shortcuts = {
             "_dialogs": "<b>In dialogs</b>",
@@ -3771,7 +3761,6 @@ class PomodoroDialog(BaseDialog):
         }
 
     def _init(self):
-
         html = f"""
             <h1><i class='fas'>\uf2f2</i>&nbsp;&nbsp;Pomodoro
                 <button type='button'><i class='fas'>\uf00d</i></button>
@@ -3884,7 +3873,6 @@ class PomodoroDialog(BaseDialog):
             self._set_state("pre-work")
 
     def _update(self):
-
         # Always do this
 
         state, etime = self._state
@@ -3916,7 +3904,6 @@ class PomodoroDialog(BaseDialog):
             self._set_state("pre-work")
 
     def alarm(self, old_state):
-
         # Open this dialog
         self.open()
 
