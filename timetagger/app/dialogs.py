@@ -3610,8 +3610,9 @@ class SettingsDialog(BaseDialog):
                 </select>
                 <div>Durations:</div>
                 <select>
-                    <option value='hms'>1h20m</option>
-                    <option value='colon'>01:20</option>
+                    <option value='dhms'>1d3h20m</option>
+                    <option value='hms'>27h20m</option>
+                    <option value='colon'>27:20</option>
                 </select>
             </div>
             <h2><i class='fas'>\uf085</i>&nbsp;&nbsp;Misc</h2>
